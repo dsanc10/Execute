@@ -1,10 +1,10 @@
-
 `timescale 1ns / 1ps
 
 module executeTB;
 
     reg clk;
-    reg [1:0] ctlwb_in, ctlm_in;
+    reg [1:0] ctlwb_in;
+    reg [2:0] ctlm_in;
     reg [31:0] npc, rdata1, rdata2, s_extend;
     reg [4:0] instr_2016, instr_1511;
     reg [1:0] alu_op;
@@ -39,11 +39,12 @@ module executeTB;
     );
 
     initial begin
-        clk = 0;
+        clk = 1'b0;
         forever #5 clk = ~clk;
     end
 
     initial begin
+        // First case is captured at 5 ns.
         ctlwb_in = 2'b10;
         ctlm_in = 3'b001;
 
@@ -57,21 +58,19 @@ module executeTB;
 
         alu_op = 2'b10;
         funct = 6'b100000;
-
-        alusrc = 1;
-        regdst = 1;
+        alusrc = 1'b1;
+        regdst = 1'b1;
 
         #16;
 
-        alusrc = 0;
-        regdst = 0;
-        s_extend = 32'd8;
-
+        // Second case is captured at 25 ns.
         alu_op = 2'b01;
         funct = 6'b100010;
+        alusrc = 1'b0;
+        regdst = 1'b0;
+        s_extend = 32'd8;
 
         #14;
-
         $finish;
     end
 
